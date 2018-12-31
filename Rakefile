@@ -42,7 +42,10 @@ end
 #
 # Tests
 #
-task :default => [:compile, :test]
+require 'rubocop/rake_task'
+
+RuboCop::RakeTask.new
+task :default => [:compile, :test, :rubocop]
 
 task :cover do
   ruby 'test/coverage/cover.rb'
