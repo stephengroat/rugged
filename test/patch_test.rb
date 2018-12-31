@@ -1,14 +1,14 @@
-require "test_helper"
+require 'test_helper'
 
 class PatchTest < Rugged::TestCase
   def test_to_s
-    repo = FixtureRepo.from_libgit2("diff")
+    repo = FixtureRepo.from_libgit2('diff')
     repo.config['core.abbrev'] = 7
 
-    a = repo.lookup("d70d245ed97ed2aa596dd1af6536e4bfdb047b69")
-    b = repo.lookup("7a9e0b02e63179929fed24f0a3e0f19168114d10")
+    a = repo.lookup('d70d245ed97ed2aa596dd1af6536e4bfdb047b69')
+    b = repo.lookup('7a9e0b02e63179929fed24f0a3e0f19168114d10')
 
-    diff = a.tree.diff(b.tree, :context_lines => 0)
+    diff = a.tree.diff(b.tree, context_lines: 0)
 
     assert_equal <<-EOS, diff.patches[0].to_s
 diff --git a/another.txt b/another.txt
@@ -55,13 +55,13 @@ EOS
   end
 
   def test_lines
-    repo = FixtureRepo.from_libgit2("diff")
+    repo = FixtureRepo.from_libgit2('diff')
     repo.config['core.abbrev'] = 7
 
-    a = repo.lookup("d70d245ed97ed2aa596dd1af6536e4bfdb047b69")
-    b = repo.lookup("7a9e0b02e63179929fed24f0a3e0f19168114d10")
+    a = repo.lookup('d70d245ed97ed2aa596dd1af6536e4bfdb047b69')
+    b = repo.lookup('7a9e0b02e63179929fed24f0a3e0f19168114d10')
 
-    diff = a.tree.diff(b.tree, :context_lines => 0)
+    diff = a.tree.diff(b.tree, context_lines: 0)
 
     patch = diff.patches[1]
 
@@ -78,13 +78,13 @@ EOS
   end
 
   def test_header
-    repo = FixtureRepo.from_libgit2("diff")
+    repo = FixtureRepo.from_libgit2('diff')
     repo.config['core.abbrev'] = 7
 
-    a = repo.lookup("d70d245ed97ed2aa596dd1af6536e4bfdb047b69")
-    b = repo.lookup("7a9e0b02e63179929fed24f0a3e0f19168114d10")
+    a = repo.lookup('d70d245ed97ed2aa596dd1af6536e4bfdb047b69')
+    b = repo.lookup('7a9e0b02e63179929fed24f0a3e0f19168114d10')
 
-    diff = a.tree.diff(b.tree, :context_lines => 0)
+    diff = a.tree.diff(b.tree, context_lines: 0)
 
     assert_equal <<-DIFF, diff.patches[1].header
 diff --git a/readme.txt b/readme.txt

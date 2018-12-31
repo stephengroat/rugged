@@ -5,9 +5,9 @@
 
 begin
   RUBY_VERSION =~ /(\d+.\d+)/
-  require "rugged/#{$1}/rugged"
+  require "rugged/#{Regexp.last_match(1)}/rugged"
 rescue LoadError
-  require "rugged/rugged"
+  require 'rugged/rugged'
 end
 require 'rugged/index'
 require 'rugged/object'

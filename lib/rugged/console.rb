@@ -9,6 +9,6 @@ def repo
   Rugged::Repository.new(File.expand_path('../../../', __FILE__))
 end
 
-Pry.config.prompt = lambda do |context, nesting, pry|
+Pry.config.prompt = lambda do |context, _nesting, _pry|
   "[rugged] #{context}> "
 end

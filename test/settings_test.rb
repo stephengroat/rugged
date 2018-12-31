@@ -1,7 +1,7 @@
-require "test_helper"
+require 'test_helper'
 
 class SettingsTest < Rugged::TestCase
-  def scrub_stack size
+  def scrub_stack(size)
     return if size == 0
     scrub_stack size - 1
   end
@@ -13,8 +13,8 @@ class SettingsTest < Rugged::TestCase
     GC.start
 
     size = Rugged::Settings.used_cache_size
-    repo = FixtureRepo.from_libgit2("attr")
-    diff = repo.diff("605812a", "370fe9ec22", :context_lines => 1, :interhunk_lines => 1)
+    repo = FixtureRepo.from_libgit2('attr')
+    diff = repo.diff('605812a', '370fe9ec22', context_lines: 1, interhunk_lines: 1)
 
     # cache size should grow
     assert_operator size, :<, Rugged::Settings.used_cache_size

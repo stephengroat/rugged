@@ -4,7 +4,7 @@ require 'set'
 
 CWD = File.expand_path(File.dirname(__FILE__))
 
-IGNORED_METHODS = %w(
+IGNORED_METHODS = %w[
   git_blob_free
   git_blob_lookup
   git_blob_lookup_prefix
@@ -62,13 +62,13 @@ IGNORED_METHODS = %w(
   git_strarray_copy
   git_trace_set
   imaxdiv
-)
+].freeze
 
 method_list = nil
 
 # The list of methods in libgit2 that we want coverage for
 open('http://libgit2.github.com/libgit2/HEAD.json') do |f|
-  json_data = JSON.parse(f.read())
+  json_data = JSON.parse(f.read)
   method_list = json_data['groups']
 end
 
@@ -87,11 +87,9 @@ source_files = Dir.glob("#{CWD}/../../ext/rugged/*.{c,h}")
 found = Set.new
 source_files.each do |file|
   File.open(file) do |f|
-    contents = f.read()
+    contents = f.read
     look_for.each do |method|
-      if contents.index(method) != nil
-        found.add(method)
-      end
+      found.add(method) unless contents.index(method).nil?
     end
   end
 end
@@ -102,12 +100,11 @@ total_methods = 0
 
 # Print the results for each group
 method_list.each do |group, group_methods|
-
   # Skip the group if all methods are ignored
-  next if group_methods.size == 0
+  next if group_methods.empty?
 
   # What are for we missing for this group?
-  group_miss = group_methods.reject {|m| found.include? m}
+  group_miss = group_methods.reject { |m| found.include? m }
   print "\n#{group} [#{group_methods.size - group_miss.size}/#{group_methods.size}]: "
 
   # Add the numbers to our grand total running count
@@ -116,18 +113,16 @@ method_list.each do |group, group_methods|
 
   # Unit test style printout. A dot is a match, an 'M' is a miss.
   group_methods.each do |m|
-    print found.include?(m) ? "." : "M"
+    print found.include?(m) ? '.' : 'M'
   end
 
   print "\n"
 
   # Print out what is missing
-  if not group_miss.empty?
-    puts "  > missing: " + "#{group_miss.join(", ")}"
-  end
+  puts '  > missing: ' + group_miss.join(', ').to_s unless group_miss.empty?
 end
 
 # The grand tally
 percent = (100.0 * (total_methods - total_missing) / total_methods).round
-puts "\n" + "=" * 60
+puts "\n" + '=' * 60
 puts "\nTOTAL: [#{total_methods - total_missing}/#{total_methods}] wrapped. (#{percent}% coverage)"

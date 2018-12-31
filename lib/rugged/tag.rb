@@ -5,9 +5,9 @@
 
 module Rugged
   class Tag < Rugged::Reference
-    GPG_SIGNATURE_PREFIX = "-----BEGIN PGP SIGNATURE-----".freeze
+    GPG_SIGNATURE_PREFIX = '-----BEGIN PGP SIGNATURE-----'.freeze
 
-    def self.extract_signature(repo, oid, prefix=GPG_SIGNATURE_PREFIX)
+    def self.extract_signature(repo, oid, prefix = GPG_SIGNATURE_PREFIX)
       object = repo.read(oid)
 
       unless object.type == :tag
@@ -19,18 +19,16 @@ module Rugged
           object.data.byteslice(index..-1),
           object.data.byteslice(0...index)
         ]
-      else
-        nil
       end
     end
 
     def name
-      canonical_name.sub(%r{^refs/tags/}, "")
+      canonical_name.sub(%r{^refs/tags/}, '')
     end
 
     class Annotation
       def self.prettify_message(msg, strip_comments = true)
-        Rugged::prettify_message(msg, strip_comments)
+        Rugged.prettify_message(msg, strip_comments)
       end
 
       def inspect
@@ -39,15 +37,15 @@ module Rugged
 
       def to_hash
         {
-          :message => message,
-          :name => name,
-          :target => target,
-          :tagger => tagger,
+          message: message,
+          name: name,
+          target: target,
+          tagger: tagger
         }
       end
 
-      def modify(new_args, force=True)
-        args = self.to_hash.merge(new_args)
+      def modify(new_args, force = True)
+        args = to_hash.merge(new_args)
         Tag.create(args, force)
       end
     end

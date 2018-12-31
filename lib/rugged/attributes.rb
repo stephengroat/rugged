@@ -15,8 +15,8 @@ module Rugged
       LOAD_PRIORITIES = {
         [:file, :index] => 0,
         [:index, :file] => 1,
-        [:index] => 2,
-      }
+        [:index] => 2
+      }.freeze
 
       def self.parse_opts(opt)
         flags = LOAD_PRIORITIES[opt[:priority]] || 0

@@ -1,7 +1,6 @@
-require "test_helper"
+require 'test_helper'
 
 class ErrorsTest < Rugged::TestCase
-
   def test_rugged_error_classes_exist
     error_classes = [
       Rugged::NoMemError,
@@ -31,4 +30,3 @@ class ErrorsTest < Rugged::TestCase
     end
   end
 end
-

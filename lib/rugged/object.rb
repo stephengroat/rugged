@@ -6,7 +6,7 @@
 module Rugged
   class Object
     def <=>(other)
-      self.oid <=> other.oid
+      oid <=> other.oid
     end
   end
 end

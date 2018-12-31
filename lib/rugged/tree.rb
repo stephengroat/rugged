@@ -128,7 +128,7 @@ module Rugged
 
     def self.diff(repo, tree, other_tree = nil, options = {})
       if tree && !tree.is_a?(Rugged::Tree)
-        raise TypeError, "At least a Rugged::Tree object is required for diffing"
+        raise TypeError, 'At least a Rugged::Tree object is required for diffing'
       end
 
       if other_tree.nil?
@@ -150,7 +150,7 @@ module Rugged
         when Rugged::Index
           diff_tree_to_index repo, tree, other_tree, options
         else
-          raise TypeError, "A Rugged::Commit, Rugged::Tree or Rugged::Index instance is required"
+          raise TypeError, 'A Rugged::Commit, Rugged::Tree or Rugged::Index instance is required'
         end
       end
     end
@@ -166,28 +166,28 @@ module Rugged
 
     def inspect
       data = "#<Rugged::Tree:#{object_id} {oid: #{oid}}>\n"
-      self.each { |e| data << "  <\"#{e[:name]}\" #{e[:oid]}>\n" }
+      each { |e| data << "  <\"#{e[:name]}\" #{e[:oid]}>\n" }
       data
     end
 
     # Walks the tree but only yields blobs
-    def walk_blobs(mode=:postorder)
-      self.walk(mode) { |root, e| yield root, e if e[:type] == :blob }
+    def walk_blobs(mode = :postorder)
+      walk(mode) { |root, e| yield root, e if e[:type] == :blob }
     end
 
     # Walks the tree but only yields subtrees
-    def walk_trees(mode=:postorder)
-      self.walk(mode) { |root, e| yield root, e if e[:type] == :tree }
+    def walk_trees(mode = :postorder)
+      walk(mode) { |root, e| yield root, e if e[:type] == :tree }
     end
 
     # Iterate over the blobs in this tree
     def each_blob
-      self.each { |e| yield e if e[:type] == :blob }
+      each { |e| yield e if e[:type] == :blob }
     end
 
     # Iterate over the subtrees in this tree
     def each_tree
-      self.each { |e| yield e if e[:type] == :tree }
+      each { |e| yield e if e[:type] == :tree }
     end
   end
 end

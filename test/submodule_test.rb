@@ -45,14 +45,14 @@ class SubmoduleTest < Rugged::TestCase
   def test_submodule_attribute_getters
     # unchanged
     submodule = @repo.submodules['sm_unchanged']
-    oid = "480095882d281ed676fe5b863569520e54a7d5c0"
+    oid = '480095882d281ed676fe5b863569520e54a7d5c0'
 
     submodule_repo = submodule.repository
     assert_instance_of Rugged::Repository, submodule_repo
 
     assert :none, submodule.ignore_rule
     assert submodule.path.end_with?('sm_unchanged')
-    #assert submodule.url.end_with?('submod2_target')
+    # assert submodule.url.end_with?('submod2_target')
     assert_equal 'sm_unchanged', submodule.name
 
     assert_equal oid, submodule.head_oid
@@ -96,7 +96,7 @@ class SubmoduleTest < Rugged::TestCase
   end
 
   def test_submodule_each
-    assert @repo.submodules.kind_of? Enumerable
+    assert @repo.submodules.is_a? Enumerable
     assert_instance_of Enumerator, @repo.submodules.each
 
     @repo.submodules.each do |submodule|
@@ -108,7 +108,7 @@ class SubmoduleTest < Rugged::TestCase
 
     # test error handling in callback
     assert_raises TestException do
-      @repo.submodules.each do |submodule|
+      @repo.submodules.each do |_submodule|
         raise TestException
       end
     end
@@ -150,7 +150,7 @@ class SubmoduleTest < Rugged::TestCase
     assert submodule.deleted_from_workdir?
 
     # now mkdir sm_unchanged to test uninitialized
-    FileUtils.mkdir(sm_unchanged_path, :mode => 0755)
+    FileUtils.mkdir(sm_unchanged_path, mode: 0o755)
     submodule = @repo.submodules['sm_unchanged']
     assert_includes submodule.status, :uninitialized
     assert submodule.uninitialized?
@@ -183,13 +183,13 @@ class SubmoduleTest < Rugged::TestCase
     assert submodule.unmodified?
     refute submodule.untracked_files_in_workdir?
 
-    #dirty
+    # dirty
     @repo.submodules.update('sm_changed_file', ignore_rule: :dirty)
     submodule = @repo.submodules['sm_changed_file']
 
     refute submodule.modified_files_in_workdir?
 
-    #all
+    # all
     @repo.submodules.update('sm_added_and_uncommited', ignore_rule: :all)
     submodule = @repo.submodules['sm_added_and_uncommited']
 
@@ -203,11 +203,9 @@ class SubmoduleTest < Rugged::TestCase
 
     refute submodule.fetch_recurse_submodules?
 
-    @repo.submodules.update(submodule, {
-      url: url,
-      ignore_rule: :untracked,
-      fetch_recurse_submodules: true
-    })
+    @repo.submodules.update(submodule, url: url,
+                                       ignore_rule: :untracked,
+                                       fetch_recurse_submodules: true)
 
     submodule.reload
 
@@ -250,7 +248,7 @@ class SubmoduleTest < Rugged::TestCase
   def test_submodule_init
     submodule = @repo.submodules['sm_unchanged']
 
-    #erase submodule data from .git/config
+    # erase submodule data from .git/config
     @repo.config.delete('submodule.sm_unchanged.url')
 
     # confirm no submodule data in config

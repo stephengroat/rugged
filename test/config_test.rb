@@ -1,15 +1,15 @@
-require "test_helper"
+require 'test_helper'
 
 class ConfigTest < Rugged::TestCase
   def setup
-    @repo = FixtureRepo.from_rugged("testrepo.git")
+    @repo = FixtureRepo.from_rugged('testrepo.git')
   end
 
   def test_multi_fetch
     config = @repo.config
-    fetches = ["+refs/heads/*:refs/remotes/test_remote/*",
-               "+refs/heads/*:refs/remotes/hello_remote/*"]
-    assert_equal fetches, config.get_all("remote.test_multiple_fetches.fetch")
+    fetches = ['+refs/heads/*:refs/remotes/test_remote/*',
+               '+refs/heads/*:refs/remotes/hello_remote/*']
+    assert_equal fetches, config.get_all('remote.test_multiple_fetches.fetch')
   end
 
   def test_read_config_file
@@ -69,7 +69,7 @@ end
 
 class ConfigWriteTest < Rugged::TestCase
   def setup
-    @source_repo = FixtureRepo.from_rugged("testrepo.git")
+    @source_repo = FixtureRepo.from_rugged('testrepo.git')
     @repo = FixtureRepo.clone(@source_repo)
     @path = @repo.workdir
   end

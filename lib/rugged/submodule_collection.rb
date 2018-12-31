@@ -5,7 +5,6 @@
 
 module Rugged
   class SubmoduleCollection
-
     # call-seq:
     #   submodules.setup_add(url, path[, options]) -> submodule
     #
@@ -32,6 +31,7 @@ module Rugged
     end
 
     private
+
     # currently libgit2's `git_submodule_add_setup` initializes a repo
     # with a workdir for the submodule. libgit2's `git_clone` however
     # requires the target for the clone to be an empty dir.
@@ -44,7 +44,7 @@ module Rugged
       # the remote was just added by setup_add, no need to check presence
       repo.remotes['origin'].fetch(fetch_options)
 
-      repo.branches.create('master','origin/master')
+      repo.branches.create('master', 'origin/master')
       repo.branches['master'].upstream = repo.branches['origin/master']
 
       repo.checkout_head(strategy: :force)

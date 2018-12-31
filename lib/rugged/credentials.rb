@@ -8,10 +8,11 @@ module Rugged
     # A plain-text username and password credential object.
     class UserPassword
       def initialize(options)
-        @username, @password = options[:username], options[:password]
+        @username = options[:username]
+        @password = options[:password]
       end
 
-      def call(url, username_from_url, allowed_types)
+      def call(_url, _username_from_url, _allowed_types)
         self
       end
     end
@@ -19,10 +20,13 @@ module Rugged
     # A ssh key credential object that can optionally be passphrase-protected
     class SshKey
       def initialize(options)
-        @username, @publickey, @privatekey, @passphrase = options[:username], options[:publickey], options[:privatekey], options[:passphrase]
+        @username = options[:username]
+        @publickey = options[:publickey]
+        @privatekey = options[:privatekey]
+        @passphrase = options[:passphrase]
       end
 
-      def call(url, username_from_url, allowed_types)
+      def call(_url, _username_from_url, _allowed_types)
         self
       end
     end
@@ -32,7 +36,7 @@ module Rugged
         @username = options[:username]
       end
 
-      def call(url, username_from_url, allowed_types)
+      def call(_url, _username_from_url, _allowed_types)
         self
       end
     end
@@ -40,7 +44,7 @@ module Rugged
     # A "default" credential usable for Negotiate mechanisms like NTLM or
     # Kerberos authentication
     class Default
-      def call(url, username_from_url, allowed_types)
+      def call(_url, _username_from_url, _allowed_types)
         self
       end
     end

@@ -19,7 +19,7 @@ module Rugged
     #
     # Returns a Rugged::Commit object.
     def last_commit
-      self.head.target
+      head.target
     end
 
     # Checkout the specified branch, reference or commit.
@@ -30,26 +30,26 @@ module Rugged
       options[:strategy] ||= :safe
       options.delete(:paths)
 
-      return checkout_head(options) if target == "HEAD"
+      return checkout_head(options) if target == 'HEAD'
 
-      if target.kind_of?(Rugged::Branch)
-        branch = target
-      else
-        branch = branches[target]
-      end
+      branch = if target.is_a?(Rugged::Branch)
+                 target
+               else
+                 branches[target]
+               end
 
       if branch
-        self.checkout_tree(branch.target, options)
+        checkout_tree(branch.target, options)
 
         if branch.remote?
-          references.create("HEAD", branch.target_id, force: true)
+          references.create('HEAD', branch.target_id, force: true)
         else
-          references.create("HEAD", branch.canonical_name, force: true)
+          references.create('HEAD', branch.canonical_name, force: true)
         end
       else
-        commit = Commit.lookup(self, self.rev_parse_oid(target))
-        references.create("HEAD", commit.oid, force: true)
-        self.checkout_tree(commit, options)
+        commit = Commit.lookup(self, rev_parse_oid(target))
+        references.create('HEAD', commit.oid, force: true)
+        checkout_tree(commit, options)
       end
     end
 
@@ -97,29 +97,29 @@ module Rugged
     end
 
     def diff(left, right, opts = {})
-      left = rev_parse(left) if left.kind_of?(String)
-      right = rev_parse(right) if right.kind_of?(String)
+      left = rev_parse(left) if left.is_a?(String)
+      right = rev_parse(right) if right.is_a?(String)
 
       if !left.is_a?(Rugged::Tree) && !left.is_a?(Rugged::Commit) && !left.nil?
-        raise TypeError, "Expected a Rugged::Tree or Rugged::Commit instance"
+        raise TypeError, 'Expected a Rugged::Tree or Rugged::Commit instance'
       end
 
       if !right.is_a?(Rugged::Tree) && !right.is_a?(Rugged::Commit) && !right.nil?
-        raise TypeError, "Expected a Rugged::Tree or Rugged::Commit instance"
+        raise TypeError, 'Expected a Rugged::Tree or Rugged::Commit instance'
       end
 
       if left
         left.diff(right, opts)
       elsif right
-        right.diff(left, opts.merge(:reverse => !opts[:reverse]))
+        right.diff(left, opts.merge(reverse: !opts[:reverse]))
       end
     end
 
     def diff_workdir(left, opts = {})
-      left = rev_parse(left) if left.kind_of?(String)
+      left = rev_parse(left) if left.is_a?(String)
 
       if !left.is_a?(Rugged::Tree) && !left.is_a?(Rugged::Commit)
-        raise TypeError, "Expected a Rugged::Tree or Rugged::Commit instance"
+        raise TypeError, 'Expected a Rugged::Tree or Rugged::Commit instance'
       end
 
       left.diff_workdir(opts)
@@ -133,7 +133,7 @@ module Rugged
     #
     # Returns nothing if called with a block, otherwise returns an instance of
     # Enumerable::Enumerator containing Rugged::Commit objects.
-    def walk(from, sorting=Rugged::SORT_DATE, &block)
+    def walk(from, sorting = Rugged::SORT_DATE, &block)
       walker = Rugged::Walker.new(self)
       walker.sorting(sorting)
       walker.push(from)
@@ -222,13 +222,13 @@ module Rugged
     # an OID or a reference name, or a Rugged::Object instance.
     #
     # Returns a Rugged::Branch object
-    def create_branch(name, sha_or_ref = "HEAD")
-      case sha_or_ref
-      when Rugged::Object
-        target = sha_or_ref.oid
-      else
-        target = rev_parse_oid(sha_or_ref)
-      end
+    def create_branch(name, sha_or_ref = 'HEAD')
+      target = case sha_or_ref
+               when Rugged::Object
+                 sha_or_ref.oid
+               else
+                 rev_parse_oid(sha_or_ref)
+               end
 
       branches.create(name, target)
     end
@@ -247,11 +247,11 @@ module Rugged
         return nil
       end
       blob = Rugged::Blob.lookup(self, blob_data[:oid])
-      (blob.type == :blob) ? blob : nil
+      blob.type == :blob ? blob : nil
     end
 
     def fetch(remote_or_url, *args)
-      unless remote_or_url.kind_of? Remote
+      unless remote_or_url.is_a? Remote
         remote_or_url = remotes[remote_or_url] || remotes.create_anonymous(remote_or_url)
       end
 
@@ -265,7 +265,7 @@ module Rugged
     # Returns a hash containing the pushed refspecs as keys and
     # any error messages or +nil+ as values.
     def push(remote_or_url, *args)
-      unless remote_or_url.kind_of? Remote
+      unless remote_or_url.is_a? Remote
         remote_or_url = remotes[remote_or_url] || remotes.create_anonymous(remote_or_url)
       end
 

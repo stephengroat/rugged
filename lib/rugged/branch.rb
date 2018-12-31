@@ -7,7 +7,7 @@ module Rugged
   class Branch < Rugged::Reference
     def ==(other)
       other.instance_of?(Rugged::Branch) &&
-        other.canonical_name == self.canonical_name
+        other.canonical_name == canonical_name
     end
 
     # Get the remote the branch belongs to.

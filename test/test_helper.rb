@@ -15,7 +15,7 @@ module Rugged
     module FixtureRepo
       # Create a new, empty repository.
       def self.empty(*args)
-        path = Dir.mktmpdir("rugged-empty")
+        path = Dir.mktmpdir('rugged-empty')
         ensure_cleanup(path)
         Rugged::Repository.init_at(path, *args)
       end
@@ -25,7 +25,7 @@ module Rugged
         path = Dir.mktmpdir("rugged-#{name}")
         ensure_cleanup(path)
 
-        FileUtils.cp_r(File.join(TestCase::TEST_DIR, "fixtures", name, "."), path)
+        FileUtils.cp_r(File.join(TestCase::TEST_DIR, 'fixtures', name, '.'), path)
 
         prepare(path)
 
@@ -39,7 +39,7 @@ module Rugged
         path = Dir.mktmpdir("rugged-libgit2-#{name}")
         ensure_cleanup(path)
 
-        FileUtils.cp_r(File.join(TestCase::LIBGIT2_FIXTURE_DIR, name, "."), path)
+        FileUtils.cp_r(File.join(TestCase::LIBGIT2_FIXTURE_DIR, name, '.'), path)
 
         prepare(path)
 
@@ -50,7 +50,7 @@ module Rugged
 
       # Create a repository cloned from another Rugged::Repository instance.
       def self.clone(repository)
-        path = Dir.mktmpdir("rugged")
+        path = Dir.mktmpdir('rugged')
         ensure_cleanup(path)
 
         `git clone --quiet -- #{repository.path} #{path}`
@@ -60,9 +60,9 @@ module Rugged
 
       def self.prepare(path)
         Dir.chdir(path) do
-          File.rename(".gitted", ".git") if File.exist?(".gitted")
-          File.rename("gitattributes", ".gitattributes") if File.exist?("gitattributes")
-          File.rename("gitignore", ".gitignore") if File.exist?("gitignore")
+          File.rename('.gitted', '.git') if File.exist?('.gitted')
+          File.rename('gitattributes', '.gitattributes') if File.exist?('gitattributes')
+          File.rename('gitignore', '.gitignore') if File.exist?('gitignore')
         end
       end
 
@@ -82,7 +82,7 @@ module Rugged
         File.open(input_path, 'r') do |input|
           File.open(output_path, 'w') do |output|
             input.each_line do |line|
-              if %r{path = (?<submodule>.+$)} =~ line
+              if /path = (?<submodule>.+$)/ =~ line
                 submodules << submodule.strip
               elsif %r{url = \.\.\/(?<url>.+$)} =~ line
                 # Copy repositories pointed to by relative urls
@@ -91,7 +91,7 @@ module Rugged
                 url.strip!
                 path = Dir.mktmpdir(url)
                 ensure_cleanup(path)
-                FileUtils.cp_r(File.join(TestCase::LIBGIT2_FIXTURE_DIR, url, "."), path)
+                FileUtils.cp_r(File.join(TestCase::LIBGIT2_FIXTURE_DIR, url, '.'), path)
 
                 line = "url = #{path}\n"
               end
@@ -105,18 +105,17 @@ module Rugged
         # rename .gitted -> .git in submodule dirs
         submodules.each do |submodule|
           submodule_path = File.join(workdir, submodule)
-          if File.exist?(File.join(submodule_path, '.gitted'))
-            Dir.chdir(submodule_path) do
-              File.rename('.gitted', '.git')
-            end
+          next unless File.exist?(File.join(submodule_path, '.gitted'))
+          Dir.chdir(submodule_path) do
+            File.rename('.gitted', '.git')
           end
         end
       end
 
       # Delete temp directories that got created
       def self.teardown
-        self.directories.each { |path| FileUtils.remove_entry_secure(path) }
-        self.directories.clear
+        directories.each { |path| FileUtils.remove_entry_secure(path) }
+        directories.clear
       end
 
       def self.directories
@@ -125,12 +124,12 @@ module Rugged
 
       # Registers the given +path+ to be deleted when #teardown is called.
       def self.ensure_cleanup(path)
-        self.directories << path
+        directories << path
       end
     end
 
     TEST_DIR = File.dirname(File.expand_path(__FILE__))
-    LIBGIT2_FIXTURE_DIR = File.expand_path("../../vendor/libgit2/tests/resources", __FILE__)
+    LIBGIT2_FIXTURE_DIR = File.expand_path('../../vendor/libgit2/tests/resources', __FILE__)
   end
 
   class OnlineTestCase < TestCase
@@ -146,7 +145,7 @@ module Rugged
     end
 
     def self.ssh_creds?
-      %w{URL USER KEY PUBKEY PASSPHRASE}.all? { |key| ENV["GITTEST_REMOTE_SSH_#{key}"] }
+      %w[URL USER KEY PUBKEY PASSPHRASE].all? { |key| ENV["GITTEST_REMOTE_SSH_#{key}"] }
     end
 
     def self.git_creds?
@@ -154,18 +153,14 @@ module Rugged
     end
 
     def ssh_key_credential
-      Rugged::Credentials::SshKey.new({
-        username:   ENV["GITTEST_REMOTE_SSH_USER"],
-        publickey:  ENV["GITTEST_REMOTE_SSH_PUBKEY"],
-        privatekey: ENV["GITTEST_REMOTE_SSH_KEY"],
-        passphrase: ENV["GITTEST_REMOTE_SSH_PASSPHASE"],
-      })
+      Rugged::Credentials::SshKey.new(username:   ENV['GITTEST_REMOTE_SSH_USER'],
+                                      publickey:  ENV['GITTEST_REMOTE_SSH_PUBKEY'],
+                                      privatekey: ENV['GITTEST_REMOTE_SSH_KEY'],
+                                      passphrase: ENV['GITTEST_REMOTE_SSH_PASSPHASE'])
     end
 
     def ssh_key_credential_from_agent
-      Rugged::Credentials::SshKeyFromAgent.new({
-        username: ENV["GITTEST_REMOTE_SSH_USER"]
-      })
+      Rugged::Credentials::SshKeyFromAgent.new(username: ENV['GITTEST_REMOTE_SSH_USER'])
     end
   end
 end
